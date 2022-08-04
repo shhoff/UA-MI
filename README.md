@@ -1,6 +1,6 @@
 # An Uncertainty-Aware Imputation Framework for Alleviating the Sparsity Problem in Collaborative Filtering (CIKM 2022)
 
-> This repository accompanies the paper **"An Uncertainty-Aware Imputation Framework for Alleviating the Sparsity Problem in Collaborative Filtering"** by Sunghyun Hwang and Dongkyu Chae, in **ACM International Conference on Information and Knowledge Management 2022 (a.k.a. CIKM 2022)**.      
+> This repository accompanies the paper **"An Uncertainty-Aware Imputation Framework for Alleviating the Sparsity Problem in Collaborative Filtering"** by Sunghyun Hwang and Dongkyu Chae, in **ACM International Conference on Information and Knowledge Management 2022 (a.k.a. CIKM 2022)**.   
 
 ![fw_img](./img/fw_img.PNG)      
 
