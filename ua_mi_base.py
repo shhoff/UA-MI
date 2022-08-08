@@ -7,7 +7,7 @@ Python: v3.9.6
 This code includes functions for our Uncertainty-Aware Multiple Imputation (UA-MI) framework on top of base model, Multinomial Variational Autoencoder (MultVAE).
 Original source code from "Variational autoencoders for collaborative filtering" is partially used.
 
-Additionally, this code also includes functions for methods of quantifying the uncertainty in our framework: Sampling & dropout based methods (Noted as "sampling" & "dropout").
+Additionally, this code also includes functions for ensemble method of quantifying the uncertainty in our framework.
 
 Versions of the libraries are implemented as:
 Bottleneck: v1.3.2
@@ -41,7 +41,7 @@ class UA_MI_base(object):
         self.random_seed = random_seed
         self.construct_placeholders()
 
-    # This function is for variable placeholders of various input variables: input interaction, keeping probability of dropout & MC dropout, training check, annealing parameter.
+    # This function is for variable placeholders of various input variables: input interaction, keeping probability of dropout, training check, annealing parameter.
 
     def variable_placeholders(self):
 
@@ -170,71 +170,3 @@ class UA_MI_base(object):
               
             tf.summary.histogram(weight_key, self.weights_dec[-1])
             tf.summary.histogram(bias_key, self.biases_dec[-1])
-
-    # This function is for performing sampling-based method.
-
-    def sampling(self):
-
-        mu_enc, std_enc = None, None
-
-        output = tf.nn.l2_normalize(self.input_interaction, axis = 1)
-        output = tf.nn.dropout(output, keep_prob = self.keeping_prob_dropout)
-        
-        for i, (weight, bias) in enumerate(zip(self.weights_enc, self.biases_enc)):
-            output = tf.matmul(output, weight) + bias
-            
-            if i != len(self.weights_enc) - 1:
-                output = tf.nn.tanh(output)
-            else:
-                mu_enc = output[:, :self.encoder_dim[-1]]
-                log_var_enc = output[:, self.encoder_dim[-1]:]
-                std_enc = tf.exp(0.5 * log_var_enc)
-
-        epsilon = tf.random_normal(tf.shape(std_enc))
-        resampled_z = mu_enc + self.check_training_fill * epsilon * std_enc
-
-        output = resampled_z
-
-        for i, (weight, bias) in enumerate(zip(self.weights_dec, self.biases_dec)):
-            output = tf.matmul(output, weight) + bias
-
-            if i != len(self.weights_dec) - 1:
-                output = tf.nn.tanh(output)
-
-        pred_rate = tf.nn.softmax(output)
-
-        return pred_rate
-
-    # This function is for performing dropout-based method.
-
-    def dropout(self):
-        
-        mu_enc = None
-
-        output = tf.nn.l2_normalize(self.input_interaction, axis = 1)
-        output = tf.nn.dropout(output, keep_prob = self.keeping_prob_dropout)
-        
-        for i, (weight, bias) in enumerate(zip(self.weights_enc, self.biases_enc)):
-            output = tf.matmul(output, weight) + bias
-            
-            if i != len(self.weights_enc) - 1:
-                output = tf.nn.tanh(output)
-                output = tf.nn.dropout(output, keep_prob = self.keeping_prob_dropout)
-            else:
-                mu_enc = output[:, :self.encoder_dim[-1]]
-
-        resampled_z = mu_enc
-
-        output = resampled_z
-        output = tf.nn.dropout(output, keep_prob = self.keeping_prob_dropout)
-        
-        for i, (weight, bias) in enumerate(zip(self.weights_dec, self.biases_dec)):
-            output = tf.matmul(output, weight) + bias
-
-            if i != len(self.weights_dec) - 1:
-                output = tf.nn.tanh(output)
-                output = tf.nn.dropout(output, keep_prob = self.keeping_prob_dropout)
-
-        pred_rate = tf.nn.softmax(output)
-
-        return pred_rate

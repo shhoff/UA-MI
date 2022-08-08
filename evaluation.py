@@ -54,7 +54,7 @@ def recall_at_N_batch(X_pred, heldout_batch, N = 100):
 
 # Compute test metrics (NDCG@N & Recall@N)
 
-def training_evaluation(data, ens_num):
+def training_evaluation(data, ens_num = 10):
 
     batch_size_train, batch_size_test, chkpt_path, dec_dim, idxlist_train, idxlist_test, N_train, N_test, n_items, train_data, test_data_fi, test_data_fo = training_ens(data)
 
@@ -112,7 +112,7 @@ def training_evaluation(data, ens_num):
     print('Test NDCG@50 = %.5f (%.5f)' % (np.mean(n50_list), np.std(n50_list) / np.sqrt(len(n50_list))))
 
 
-def re_training_evaluation(data, fill_rate, n_ensembles):
+def re_training_evaluation(data, fill_rate = 0.1, n_ensembles = 10):
 
     batch_size_train, batch_size_test, chkpt_path, dec_dim, idxlist_train, idxlist_test, N_train, N_test, n_items, train_data, test_data_fi, test_data_fo = re_training_ens(data, fill_rate, n_ensembles)
 

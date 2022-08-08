@@ -4,7 +4,7 @@ Mar. 10, 2022.
 Version of python is implemented as:
 Python: v3.9.6
 
-This code is the code for loading recommendation data used in our Uncertainty-Aware Multiple Imputation (UA-MI) framework: Amazon-Book (A-Book), CiteULike (CUL)-a, Epinions, MovieLens (ML)-20M.
+This code is the code for loading CiteULike (CUL)-a data used in our Uncertainty-Aware Multiple Imputation (UA-MI) framework.
 Original source code from "Variational autoencoders for collaborative filtering" is partially used.
 
 Versions of the libraries are implemented as:
